@@ -221,6 +221,22 @@ describe("createAgentSession stream options", () => {
 		}
 	});
 
+	it("forwards the configured transport to direct streams such as compaction", async () => {
+		const options = await captureStreamOptions("openai-codex-responses", { transport: "sse" });
+
+		expect(options?.transport).toBe("sse");
+	});
+
+	it("lets a direct stream override the configured transport", async () => {
+		const options = await captureStreamOptions(
+			"openai-codex-responses",
+			{ transport: "sse" },
+			{ transport: "websocket" },
+		);
+
+		expect(options?.transport).toBe("websocket");
+	});
+
 	it("forwards httpIdleTimeoutMs as timeoutMs for OpenAI Codex", async () => {
 		const options = await captureStreamOptions("openai-codex-responses", { httpIdleTimeoutMs: 1234 });
 
